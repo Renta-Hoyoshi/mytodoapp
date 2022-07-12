@@ -1,0 +1,11 @@
+let addTodo = (e) => {
+	let tdList = $(e.target).parent().parent().find('td');
+	
+	let todoContents = $(tdList[1]).text();
+	let todo = {'todoContents': todoContents };
+	todo
+	let tbody = $('#todoTable').find('tbody');
+	$(tbody).children().remove();
+	
+	
+}

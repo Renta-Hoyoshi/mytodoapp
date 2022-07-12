@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <title>TodoApp</title>
+       
+
+</head>
+    
+<body>
+    
+    <header>
+        <h1>My Todo App</h1>
+        
+        <div>
+            <form name="todoForm" id="todoForm" method="post" action="#">
+                <input type="text" name="todo" placeholder="input your task!" />
+                <button type="submit">Add</button>            
+            </form>
+        </div>
+        
+        <table id="todoTable">
+           <tr th:each="item: ${todoList}">
+               <td th:text="${item.todoContents}"></td>
+           </tr>
+        </table>
+        
+        <button id="historyBtn">Your Histories</button>
+        
+        <div id="history" title="Your Histories" style="display: none;">
+            <div id="history_contents">
+            
+            </div>
+        </div>
+    </header>
+    
+</body>
+</html>

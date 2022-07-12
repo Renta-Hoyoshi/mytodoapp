@@ -1,0 +1,30 @@
+@charset  "UTF-8";
+
+/* -- common -- */
+html {
+    font-size: 100%;
+}
+body {
+    font-family: "Yu Gothic Medium", "ŸàƒSƒVƒbƒN Medium", YuGothic, "ŸàƒSƒVƒbƒN‘Ì", "ƒqƒ‰ƒMƒmŠpƒS Pro W3", sans-serif;
+    line-height: 1.7;
+    background-color: #0E1157	;
+}
+/* -- header --  */
+header {
+    width: 100%;
+    height: 50px;
+    color: white;
+}
+header h1{
+    font-size:1.5rem;
+    padding-top: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+/* -- main -- */
+.todo_main {
+	background-color: white;
+	width: 60%;
+	height: 450px;
+	border-radius: 5%;
+}

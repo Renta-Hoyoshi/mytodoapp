@@ -1,0 +1,33 @@
+package com.example.todoapp.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.example.todoapp.model.dao.TodoRepository;
+import com.example.todoapp.model.entity.Todo;
+import com.example.todoapp.model.form.TodoForm;
+
+@Controller
+@RequestMapping("/todoapp")
+public class indexController {
+    
+	//Todoエンティティ―からtodoテーブルにアクセスするDAO
+	@Autowired
+	private TodoRepository todoRepos;
+	
+	//トップページindexに遷移
+	//todoテーブルからTodoエンティティ―取得→model(→フロントへ）
+	@RequestMapping("/")
+	public String index(Model model) {
+		List<Todo> todoList = todoRepos.findAll();
+		model.addAttribute("todoList", todoList);
+		
+		return "index";
+	}
+	
+	
+}

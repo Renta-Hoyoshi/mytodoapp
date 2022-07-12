@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <title>TodoApp</title>
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="/js/common.js" th:src="@{/js/common.js}"></script > 
+    <script>
+       $(() => {
+	       $('.deleteBtn').on('click', (e) => {
+		       e.preventDefault();
+		       let tdList = $(e.target).parent().parent().find('td');
+		       
+		       let id = $(tdList[0]).text();
+		       let todoContents = $(tdList[1]).text();
+		       let jsonString = {
+			       'id': id,
+			       'todoContents': todoContents
+		       };
+		       $.ajax({
+			       type: 'POST',
+			       url: '/todoapp/api/deleteTodo',
+			       data: JSON.stringify(jsonString),
+			       contentType: 'application/json',
+			       scriptCharset: 'utf-8'
+		       })
+		       .then((result) => {
+			       console.log(result);
+			       alert('íœ‚µ‚Ü‚µ‚½B');
+			       $(tdList).parent().remove();
+		       }, () => {
+                      console.error('Error: ajax connection failed.');			
+		          }
+		       );
+	       }); 
+       });
+       
+    </script>     
+
+</head>
+    
+<body>
+    
+    <header>
+        <h1>My Todo App</h1>
+    </header>
+    
+    <main>
+         <div>   
+            <div class="add_todo">
+                <form name="todoForm" id="todoForm" method="post" th:action="@{/todoapp/addTodo}" th:object="${todo}">
+                    <input type="text" id="todoContents" name="todoContents" placeholder="input your task!" />
+                    <button type="submit" class="addBtn">Add</button>            
+                </form>
+            </div>
+        
+            <table id="todoTable">
+               <tr th:each="item: ${todoList}">
+                   <td type="hidden" th:text="${item.id}"></td>
+                   <td><button class="checkBtn" type="checkBtn" >done</button></td>
+                   <td th:text="${item.todoContents}"></td> 
+                   <td><button class="deleteBtn" type="submit">delete</button></td>
+               </tr>   
+            </table>
+            
+            <button id="historyBtn">Your Histories</button>
+         
+            <div id="history" title="Your Histories" style="display: none;">
+            <table id="historyTable">
+                <tbody>
+                
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </main>
+    
+</body>
+</html>

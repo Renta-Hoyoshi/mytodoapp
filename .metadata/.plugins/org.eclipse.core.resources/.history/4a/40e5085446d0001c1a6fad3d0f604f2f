@@ -1,0 +1,6 @@
+let addTodo = (e) => {
+	let tdList = $(e.target).parent().parent().find('td');
+	
+	let todoContents = $(tdList[1]).text();
+	
+}

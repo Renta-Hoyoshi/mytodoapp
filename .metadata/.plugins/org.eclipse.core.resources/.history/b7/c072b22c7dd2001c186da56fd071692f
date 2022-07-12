@@ -1,0 +1,110 @@
+package com.example.todoapp.controller;
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.example.todoapp.model.dao.HistoryRepository;
+import com.example.todoapp.model.dao.TodoRepository;
+import com.example.todoapp.model.dto.HistoryDto;
+import com.example.todoapp.model.entity.History;
+import com.example.todoapp.model.entity.Todo;
+import com.example.todoapp.model.form.Complete;
+import com.example.todoapp.model.form.CompleteList;
+import com.example.todoapp.model.form.HistoryForm;
+import com.example.todoapp.model.form.TodoForm;
+import com.google.gson.Gson;
+
+
+@Controller
+@RequestMapping("/todoapp")
+public class indexController {
+    
+	//Todoエンティティ―からtodoテーブルにアクセスするDAO
+	@Autowired
+	private TodoRepository todoRepos;
+	
+	@Autowired
+	private HistoryRepository historyRepos;
+	
+	@Autowired
+	private Gson gson = new Gson();
+	
+	//トップページindexに遷移
+	//todoテーブルからTodoエンティティ―取得→model(→フロントへ）
+	@RequestMapping("/")
+	public String index(Model model) {
+		List<Todo> todoList = todoRepos.findAll();
+		List<History> historyList = historyRepos.findAll();
+		model.addAttribute("todoList", todoList);
+		model.addAttribute("histList" , historyList);
+		
+		return "index";
+	}
+	//addボタン
+	@ResponseBody
+	@RequestMapping("/api/addTodo")
+	public String addTodo(@RequestBody TodoForm todoForm,  Model model) {
+		
+		Todo todo = new Todo();
+		todo.setTodoContents(todoForm.getTodoContents());
+	    todoRepos.saveAndFlush(todo);
+	    
+	    return "redirect:/todoapp/";
+	}
+	
+	//deleteボタン
+	@ResponseBody
+	@PostMapping("/api/deleteTodo")
+	public String deleteTodo(@RequestBody Todo todo, Model model) {
+		try {
+			todoRepos.deleteById(todo.getId());
+		} catch (IllegalArgumentException e){
+			return "-1";
+		}
+		
+		return "1";
+	}
+	
+	//doneボタン
+	@ResponseBody
+	@PostMapping("/api/doneTodo")
+	public String doneTodo(@RequestBody History history,@RequestBody Todo todo, Model model) {
+		
+		
+		history.setTodoContents(history.getTodoContents());
+		todoRepos.deleteById(todo.getId());
+	    historyRepos.saveAndFlush(history);
+	    
+	    
+	    return "done";
+	}
+	
+	
+	
+
+
+	@ResponseBody
+	@PostMapping("/api/history")
+	public String historyApi(@RequestBody HistoryForm hist) {
+		long id = hist.getId();
+		List<History> history = historyRepos.findHistory(id);
+		List<HistoryDto> historyDtoList = new ArrayList<>();
+		history.forEach((v) -> {
+			HistoryDto dto = new HistoryDto(v);
+			historyDtoList.add(dto);
+		});
+		return gson.toJson(history);
+	}
+	
+}

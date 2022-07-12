@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="content-type" charset="utf-8" />
+    <title>HTA</title>
+    <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css">   
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Koulen&display=swap" rel="stylesheet">
+    <link href="/css/todo.css" rel="stylesheet">
+    
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="/js/todo.js" th:src="@{/js/todo.js}" ></script > 
+    
+    <script>
+         let imcompleteList = [];
+         let completeList = [];
+         $(() => {
+	         $(document).on('click','#addBtn', addTodo);
+	         $(document).on('click','#deleteBtn', deleteTodo);
+	         $(document).on('click','#deleteAjaxBtn', deleteAjaxTodo);
+	         $(document).on('click','#doneBtn', doneTodo);
+	         $(document).on('click','#doneAjaxBtn', doneAjaxTodo);
+	         $(document).on('click','#historyBtn', showHistory);
+	     
+	         $("#history").dialog({
+	             autoOpen: false,
+	             width: 550,
+	             modal: true,
+	             buttons: [
+	                 {
+		                 text: 'OK',
+		                 click: function() {
+			                  $(this).dialog("close");
+		                 }
+	                 },
+	             ]
+             });
+         });
+    </script> 
+        
+</head>
+    
+<body>
+    
+    <header>
+        <h1>Hoyo's Todo App</h1>
+        <button id="historyBtn">history</button>
+    </header>
+     
+     <main>
+         <div class="todo_main">        
+             <div class="add_todo">
+                 <form name="todoForm" id="todoForm" method="post" th:action="@{/todoapp/addTodo}" /*th:object="${todo}"*/>
+                     <input type="text" id="todoContent" name="todoContents" placeholder="input your task!" />
+                     <button type="submit" id="addBtn">Add</button>            
+                 </form>
+             </div><!--.addTodo-->        
+            
+             <table id="todoTable">  
+               
+               
+                <tr  th:each="item: ${todoList}" id="todoTr" class="todoTr" border-bottom="0.5px solid lightgray">
+                    <td th:text="${item.id}" id="todoId" style="display: none;"></td>
+                    <td><button class="doneBtn" id="doneBtn" name="doneBtn" type="submit"></button></td>
+                    <td th:text="${item.todoContents}" id="todoContents"></td> 
+                    <td> <button id="deleteBtn" type="submit"></button></td>  
+                </tr><!--#todoTr-->    
+              
+                 
+             </table><!--#todoTable-->
+                
+             <table id="ajaxTodoTable">
+                 <tbody >
+                    
+                 </tbody>
+             </table><!--#ajaxTodoTable-->
+          </div><!--.todo_main-->
+           
+          <table id="hiddenTable" th:object="${histList}" style="display: none;">
+               <tbody>
+                   <tr th:each="history_item: ${histList}">
+                       <td th:text="${history_item.id}" id="histId" style="display: none;"></td >
+                       <td th:text="${history_item.todoContents}" id="histContents"></td >
+                           
+                   </tr>
+               </tbody >
+          </table>
+           
+          <div id="history" title="history" >
+              <table id="historyTable">
+                  <tbody>
+                    
+                  </tbody> 
+              </table>
+          </div>      
+        </main>   
+      
+</body>
+</html>

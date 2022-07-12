@@ -1,0 +1,198 @@
+@charset  "UTF-8";
+
+/* -- common -- */
+html {
+    font-size: 100%;
+}
+body {
+    font-family: "Yu Gothic Medium", "ŸàƒSƒVƒbƒN Medium", YuGothic, "ŸàƒSƒVƒbƒN‘Ì", "ƒqƒ‰ƒMƒmŠpƒS Pro W3", sans-serif;
+    line-height: 1.7;
+    background-color: #0E1157	;
+}
+/* -- header --  */
+header {
+    width: 100%;
+    height: 50px;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+header h1{
+    font-size:1.5rem;
+    padding-top: 0.5rem;
+    padding-left: 1rem;
+    font-family: 'Koulen', cursive;
+}
+#historyBtn {
+	width: 3rem;
+	height: 3rem;
+	border-radius: 50%;
+	font-size: 0.75rem;
+	background-color: darkgray;
+	color: white;
+	box-shadow: 2.5px 2.5px rgba(60, 194, 235, 0.5);
+	border: none;
+}
+#historyBtn:hover {
+	background-color: gray;
+}
+
+/* -- main -- */
+.todo_main {
+	margin: 3rem auto;
+	background-color: white;
+	width: 60%;
+	height: 450px;
+	border-radius: 1%;
+	box-shadow:
+    -10px 10px 25px rgba(69, 55, 245, 0.9),
+    10px -10px 25px rgba(1, 101, 212, 0.9);
+}
+/* -- form‚Ì”wŒi -- */
+.add_todo {
+	text-align: center;
+	padding-top: 1.5rem;
+	padding-bottom: 1.5rem;
+	border-bottom: solid 0.5px lightgray;
+	background-color: rgba(214, 227, 255,0.7);
+    border-radius: 1%;
+}
+/* -- form -- */
+input[type="text"] {
+	border: 1px rgb(13, 85, 250) solid;
+	border-radius: 5px;
+	font-size: 1rem;
+	width: 80%;
+	padding-left: 1rem;
+	background-color: white;
+}
+#addBtn {
+	font-size: 0.75rem;
+	width: 40px;
+	height: 40px;
+	background-color: #0E1157;
+	color: white;
+	border-radius: 50%;	
+	 transition: all .2s;
+}
+#addBtn:hover {
+	background-color: aqua;
+}
+
+/* -- todo‰æ–Ê -- */
+#todoTable {
+	width: 90%;
+	border-collapse: collapse;
+	margin: 1rem auto;
+	margin-bottom: 0;
+    
+}
+#todoContents {
+    padding-left: 1.5rem;
+}
+
+#todoTable tbody #todoContents,#doneBtn,#deleteBtn  {
+	margin-top: 0.5rem;
+	width: 100%;	
+}
+#doneBtn {
+	background-color: white;
+	width: 1rem;
+	height: 1rem;
+	border: 0.5px solid lightgray;
+	transition: all .2s;
+}
+#doneBtn:hover {
+	background-color: lightgray;
+}
+#deleteBtn {
+	display: block;
+	position: relative;
+	width: 1rem;
+	height: 1rem;
+	border: 1px solid white;
+	background: #fff;
+	transition: all .2s;
+}
+#deleteBtn:hover {
+	background-color: orange;
+}
+#deleteBtn::before, #deleteBtn::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 1px;
+	height: 0.75rem;
+	background: red;
+	
+}
+#deleteBtn::before {
+	transform: translate(-50%, -50%) rotate(45deg);
+}
+#deleteBtn::after {
+	transform: translate(-50%, -50%) rotate(-45deg);
+	
+}
+#todoContents {
+	border-bottom: 0.5px solid lightgray;
+}
+/* -- ajaxTable-- */
+#ajaxTodoTable {
+	width: 90%;
+	border-collapse: collapse;
+	margin: 1rem auto;
+    margin-top: 0;
+    padding-top: 0;
+}
+#todoContents {
+    padding-left: 1.5rem;
+}
+
+#ajaxTodoTable tbody #todoContents,#doneAjaxBtn,#deleteAjaxBtn  {
+	margin-top: 0.5rem;
+	width: 100%;	
+}
+#doneAjaxBtn {
+	background-color: white;
+	width: 1rem;
+	height: 1rem;
+	border: 0.5px solid lightgray;
+	transition: all .2s;
+}
+#doneAjaxBtn:hover {
+	background-color: lightgray;
+}
+#deleteAjaxBtn {
+	display: block;
+	position: relative;
+	width: 1rem;
+	height: 1rem;
+	border: 1px solid white;
+	background: #fff;
+	transition: all .2s;
+}
+#deleteAjaxBtn:hover {
+	background-color: orange;
+}
+#deleteAjaxBtn::before, #deleteAjaxBtn::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 1px;
+	height: 0.75rem;
+	background: red;
+	
+}
+#deleteAjaxBtn::before {
+	transform: translate(-50%, -50%) rotate(45deg);
+}
+#deleteAjaxBtn::after {
+	transform: translate(-50%, -50%) rotate(-45deg);
+	
+}
+#todoContents {
+	border-bottom: 0.5px solid lightgray;
+}

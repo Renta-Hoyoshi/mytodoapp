@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <title>TodoApp</title>
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="/js/common.js" th:src="@{/js/common.js}"></script > 
+    <script>
+       $(() => {
+            $('.deleteBtn').on('click', (e) => {
+	            e.preventDefault();
+		        let tdList = $(e.target).parent().parent().find('td');
+		       
+		        let id = $(tdList[0]).text();
+		        let todoContents = $(tdList[2]).text();
+		        let jsonString = {
+			        'id': id,
+			        'todoContents': todoContents
+		    };
+		    $.ajax({
+		         type: 'POST',
+			     url: '/todoapp/api/deleteTodo',
+			     data: JSON.stringify(jsonString),
+			     contentType: 'application/json',
+			     scriptCharset: 'utf-8'
+		    })
+		    .then((result) => {
+	            console.log(result);
+		        $(tdList).parent().remove();
+		        }, () => {
+                      console.error('Error: ajax connection failed.');			
+		            }
+	            );
+           });
+           
+           $('.doneBtn').on('click', (e) => {
+	           e.preventDefault();
+	           let tdList = $(e.target).parent().parent().find('td');
+	           let id = $(tdList[0]).text();
+		        let todoContents = $(tdList[2]).text();
+		        let jsonString = {
+			        'id': id,
+			        'todoContents': todoContents
+		       };
+	       $.ajax({
+		           type: 'POST',
+		           url: '/todoapp/api/doneTodo',
+		           data: JSON.stringify(jsonString),
+		           contentType: 'application/json',
+		           scriptCharset: 'utf-8'
+ 	       })
+ 	       .then((result) => {
+	               
+                   $(tdList).parent().remove();
+               }, () => {
+                     console.error('Error: ajax connection failed.');	
+               }
+              );
+           });
+           
+         
+      
+      $("#historyBtn").on('click', (e) => {
+          let showHistory = () => {
+	          let tdList = $(e.target).parent().parent().find('td');
+	           let id = $(tdList[0]).text();
+	           let todoContents = $(tdList[1]).text();
+	           let done = $(tdList[2]).text();
+	           let jsonString = {
+		           'id': id,
+			        'todoContents': todoContents,
+			        'done': done
+	           }
+	          $.ajax({
+		          type: 'POST',
+		          url: '/todoapp/api/history',
+		          data: JSON.stringify(jsonString),
+		          contentType: 'application/json',
+		          datatype: 'json',
+		          scriptCharset: 'utf-8'
+	          })
+	          .then((result) => {
+		      let historyList = JSON.parse(result);
+		      let tbody = $('#historyTable').find('tbody');
+		      $(tbody).children().remove();
+		      historyList.forEach((history, index) => {
+			      let tr = $('<tr />');
+			
+			      $('<td />', { 'text': history.todoContents }).appendTo(tr);
+			
+			
+			      $(tr).appendTo(tbody);
+		      });
+		      $("#history").dialog("open");
+	          }, () => {
+		              console.error('Error: ajax connection failed.');
+	              }
+	          );
+           };	
+     });
+     $("#history").dialog({
+	autoOpen: false,
+	width: 550,
+	modal: true,
+	buttons: [
+	           {
+		           text: 'OK',
+		           click: function() {
+			                  $(this).dialog("close");
+		                  }
+	               },
+	         ]
+    });
+});
+    </script>     
+</head>
+    
+<body>
+    
+    <header>
+        <h1>My Todo App</h1>
+    </header>
+    
+    <main>
+         
+         <
+             <input type="hidden" id="hiddenTodoContents" th:text="${todoContents}"/> 
+            <div class="add_todo">
+                <form name="todoForm" id="todoForm" method="post" th:action="@{/todoapp/addTodo}" th:object="${todo}">
+                    <input type="text" id="todoContents" name="todoContents" placeholder="input your task!" />
+                    <button type="submit" class="addBtn">Add</button>            
+                </form>
+            </div>
+        
+            
+            <table id="todoTable">
+               <tr  th:each="item: ${todoList}" >
+                   <td th:text="${item.id}" id="todoId" style="display: none;"></td>
+                   <td><button class="doneBtn" id="doneBtn" name="doneBtn" type="submit">done</button></td>
+                   <td th:text="${item.todoContents}"></td> 
+                   <td th:text="${item.done}" style="display: none;"></td> 
+                   <td><button class="deleteBtn" type="submit">delete</button></td>
+               </tr>   
+            </table>
+            
+            
+            
+         
+            <div id="history" title="Your Histories" style="display: none">
+            <table id="historyTable">
+                <tbody>
+                   
+                </tbody>
+            </table>
+            </div>
+           
+            
+                <table>
+                    <tr th:each="item2: ${histList}">
+                        <td th:text="${item2.id}"></td >
+                        <td th:text="${item2.todoContents}"></td >
+                        <td th:text="${item2.done}"></td >
+                        <td><button id="historyBtn" type="submit">Your Histories</button></td>
+                    </tr>
+                </table>
+            
+            
+        </div>
+    </main>
+    
+</body>
+</html>

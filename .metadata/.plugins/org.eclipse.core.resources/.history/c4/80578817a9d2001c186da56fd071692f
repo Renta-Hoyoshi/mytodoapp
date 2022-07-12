@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <title>TodoApp</title>
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="/js/common.js" th:src="@{/js/common.js}" ></script > 
+    <link rel="stylesheet"
+              href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+     <script  th:inline="javascript">
+     /*<![CDATA[*/
+     let imcompleteList = [];
+     let completeList = [];
+     let god = /*[[ ${todoList} ]]*/ null;
+     
+     $(() => {
+	     $('#addBtn').on('click', (e) => {
+	   e.preventDefault();
+	   
+	   //formから送ったtodoテキストの値を取得
+	   let todoContents = document.getElementById('todoContents').value;
+	   
+	   let jsonString = { 'todoContents': todoContents };      
+	   let imcomplete = { 'todoContents': todoContents };
+	   imcompleteList.push(imcomplete);
+	   let tbody = $('#ajaxTodoTable').find('tbody');
+	   
+	   let tr = $('<tr />');
+	   let tdButton1 = $('<td />'); 
+	   let tdButton2 = $('<td />');    
+	   
+	   $('<button />', { 'text': 'done', 'id': 'doneBtn', 'type': 'submit'}).appendTo(tdButton1);		        
+	   $(tdButton1).appendTo(tr);
+	   $('<td />', { 'text': god.id  } ).appendTo(tr);
+	   $('<td />', { 'text': imcomplete.todoContents } ).appendTo(tr);
+	   $('<button />', { 'text': 'delete', 'id': 'deleteBtn', 'type': 'submit' }).appendTo(tdButton2);
+	   $(tdButton2).appendTo(tr);       
+	   $(tr).appendTo(tbody);
+	       
+        
+		        
+	    $.ajax({
+	        type: 'POST',
+		    url: '/todoapp/api/addTodo',
+		    data: JSON.stringify(jsonString),
+	        contentType: 'application/json',
+	        scriptCharset: 'utf-8'
+ 	    })
+ 	    .then((result) => {
+	       console.log(result);
+	       $('input[name=todoContents]').val('');
+	       	
+        }, () => {
+             console.error('Error: ajax connection failed.');
+             
+           }
+       );
+              
+             
+	});
+	
+	     $(document).on('click','#deleteBtn', deleteTodo);
+	     $(document).on('click','#doneBtn', doneTodo);
+	     $(document).on('click','#historyBtn', showHistory);
+	     
+	     $("#history").dialog({
+	     autoOpen: false,
+	     width: 550,
+	     modal: true,
+	     buttons: [
+	           {
+		           text: 'OK',
+		           click: function() {
+			                  $(this).dialog("close");
+		                  }
+	               },
+	         ]
+         });
+     })
+     
+    /*]]>*/
+    </script>     
+</head>
+    
+<body>
+    
+    <header>
+        <h1>My Todo App</h1>
+    </header>
+             
+            <div class="add_todo">
+                <form name="todoForm" id="todoForm" method="post" th:action="@{/todoapp/addTodo}" th:object="${todo}">
+                    <input type="text" id="todoContents" name="todoContents" placeholder="input your task!" />
+                    <button type="submit" id="addBtn">Add</button>            
+                </form>
+            </div>
+        
+            
+            <table id="todoTable">  
+               
+               
+               <tr  th:each="item: ${todoList}" id="todoTr">
+                   <td th:text="${item.id}" id="todoId" style="display: none;"></td>
+                   <td><button class="doneBtn" id="doneBtn" name="doneBtn" type="submit">done</button></td>
+                   <td th:text="${item.todoContents}" id="todoContents"></td> 
+                   <td> <button id="deleteBtn" type="submit">delete</button></td>  
+               </tr>    
+               
+                 
+            </table>
+                
+            <table id="ajaxTodoTable">
+                <tbody>
+                
+                </tbody>
+            </table>
+            
+           
+            
+           
+            
+           
+           
+           <fieldset> 
+           <table id="hiddenTable" th:object="${histList}">
+                <tbody>
+                    <tr th:each="item2: ${histList}">
+                        <td th:text="${item2.id}" id="histId" style="display: none;"></td >
+                        <td th:text="${item2.todoContents}" id="histContents"></td >
+                           
+                    </tr>
+                </tbody >
+           </table>
+           
+           </fieldset>
+           
+            <div id="history" title="history" >
+            <table id="historyTable">
+                <tbody>
+                    
+                </tbody>
+            
+            </table>
+            </div>
+            <button id="historyBtn">history</button>       
+      
+</body>
+</html>

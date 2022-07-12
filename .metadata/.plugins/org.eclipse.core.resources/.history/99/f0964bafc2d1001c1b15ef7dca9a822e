@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <title>TodoApp</title>
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="/js/common.js" th:src="@{/js/common.js}"></script > 
+    <link rel="stylesheet"
+              href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+     <script>
+     let completeList = [];
+    
+     
+     $(() => {
+            $('#deleteBtn').on('click', (e) => {
+	            e.preventDefault();
+	            
+	             
+		        let tdList = $(e.target).parent().parent().find('td');
+		       
+		        let id = $(tdList[0]).text();
+		        let todoContents = $(tdList[2]).text();
+		        let jsonString = {
+			        'id': id,
+			        'todoContents': todoContents
+		    };
+		    $.ajax({
+		         type: 'POST',
+			     url: '/todoapp/api/deleteTodo',
+			     data: JSON.stringify(jsonString),
+			     contentType: 'application/json',
+			     scriptCharset: 'utf-8'
+		    })
+		    .then((result) => {
+	            console.log(result);
+		        $(tdList).parent().remove();
+		        }, () => {
+                      console.error('Error: ajax connection failed.');			
+		            }
+	            );
+           });
+           
+           $('#doneBtn').on('click', (e) => {
+	           e.preventDefault();
+	           let tdList = $(e.target).parent().parent().find('td');
+	           let id = $(tdList[0]).text();
+		       let todoContents = $(tdList[2]).text();
+		       let jsonString = { 'id': id, 'todoContents': todoContents };   
+		        let complete = { 'todoContents': todoContents };
+		        completeList.push(complete);
+		        let tbody = $('#hiddenTable').find('tbody');
+		        $(tbody).children().remove();
+		        completeList.forEach(function(complete, index) {
+			        let tr = $('<tr />');
+			        
+			        $('<td />', { 'text': complete.todoContents } ).appendTo(tr);
+			        
+			        $(tr).appendTo(tbody);
+		        });
+		        
+	       $.ajax({
+		           type: 'POST',
+		           url: '/todoapp/api/doneTodo',
+		           data: JSON.stringify(jsonString),
+		           contentType: 'application/json',
+		           scriptCharset: 'utf-8'
+ 	       })
+ 	       .then((result) => {
+	               console.log(result);
+                   $(tdList).parent().remove();
+               }, () => {
+                     console.error('Error: ajax connection failed.');	
+               }
+              );
+              
+             
+           });
+           
+      $("#historyBtn").on('click' ,(e) => {
+	      //‚½‚Ô‚ñƒŠƒXƒg‚Ìì‚è•û‚ª‚¨‚©‚µ‚¢
+          let showHistory = () => {   
+	          $.ajax({
+		          type: 'POST',
+		          url: '/todoapp/api/history',
+		          data: JSON.stringify({"id": $('#todoId').text(),
+		                                "todoContents": $('#histContents').text(),
+		                                "done": $('#histDone').text()
+		                               }),
+		          contentType: 'application/json',
+		          datatype: 'json',
+		          scriptCharset: 'utf-8'
+	          })
+	          .then((result) => {
+		      let historyList = JSON.parse(result);
+		      let tbody = $('#historyTable').find('tbody');
+		      $(tbody).children().remove();
+		      historyList.forEach((history, index) => {
+			      let tr = $('<tr />');
+			
+			      $('<td />', { 'text': history.todoContents }).appendTo(tr);
+			
+			
+			      $(tr).appendTo(tbody);
+		      });
+		      $("#history").dialog("open");
+	          }, () => {
+		              console.error('Error: ajax connection failed.');
+	              }
+	          );
+           };	
+     });
+     $("#history").dialog({
+	     autoOpen: false,
+	     width: 550,
+	     modal: true,
+	     buttons: [
+	           {
+		           text: 'OK',
+		           click: function() {
+			                  $(this).dialog("close");
+		                  }
+	               },
+	         ]
+    });
+    
+    
+});
+    </script>     
+</head>
+    
+<body>
+    
+    <header>
+        <h1>My Todo App</h1>
+    </header>
+             
+            <div class="add_todo">
+                <form name="todoForm" id="todoForm" method="post" th:action="@{/todoapp/addTodo}" th:object="${todo}">
+                    <input type="text" id="todoContents" name="todoContents" placeholder="input your task!" />
+                    <button type="submit" id="addBtn">Add</button>            
+                </form>
+            </div>
+        
+            
+            <table id="todoTable">  
+                         <tbody>
+               <tr  th:each="item: ${todoList}" >
+                   <td th:text="${item.id}" id="todoId" style="display: none;"></td>
+                   <td><button class="doneBtn" id="doneBtn" name="doneBtn" type="submit">done</button></td>
+                   <td th:text="${item.todoContents}"></td> 
+                   <td th:text="${item.done}" style="display: none;"></td> 
+                   <td> <button id="deleteBtn" type="submit">delete</button></td>
+               </tbody>    
+               </tr>    
+               
+            </table>
+                
+
+            
+           
+            
+            <div id="history" title="history" >
+            <table id="historyTable">
+                <tbody>
+                    
+                </tbody>
+                
+            </table>
+            
+           </div>
+           
+           <fieldset> 
+           <table id="hiddenTable" th:object="${histList}">
+                <tbody>
+                    <tr th:each="item2: ${histList}" style="display: none;">
+                        <td th:text="${item2.id}" id="histId" ></td >
+                        <td th:text="${item2.todoContents}" id="histContents"></td >
+                        <td th:text="${item2.done}" id="histDone"></td >   
+                        
+                    </tr>
+                </tbody >
+           </table>
+           
+           </fieldset>
+                <script>
+      
+</body>
+</html>

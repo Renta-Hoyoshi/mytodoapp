@@ -1,0 +1,16 @@
+let addTodo = (e) => {
+	let tdList = $(e.target).parent().parent().find('td');
+	
+	let todoContents = $(tdList[1]).text();
+	let todo = {'todoContents': todoContents };
+	todoContents.push(todo);
+	let tbody = $('#addedTodo').find('tbody');
+	
+	todoContents.forEach((todo, index) => {
+		let tr = $('<tr />');
+		$('<td />', { 'text': todo.todoContents}).appendTo(tr);
+		
+		$(tr).appendTo(tbody);
+	});
+	
+}

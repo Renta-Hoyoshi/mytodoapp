@@ -1,0 +1,29 @@
+$(() => {
+    $('.deleteBtn').on('click', (e) => {
+	    e.preventDefault();
+		let tdList = $(e.target).parent().parent().find('td');
+		       
+		let id = $('#id').val();
+		let todoContents = $(tdList[2]).text();
+		let jsonString = {
+			'id': id,
+			'todoContents': todoContents
+		};
+		$.ajax({
+		     type: 'POST',
+			 url: '/todoapp/api/deleteTodo',
+			 data: JSON.stringify(jsonString),
+			 contentType: 'application/json',
+			 scriptCharset: 'utf-8'
+		})
+		.then((result) => {
+	        console.log(result);
+		    alert("deleted");
+		    $(tdList).parent().remove();
+		    }, () => {
+                  console.error('Error: ajax connection failed.');			
+		    }
+		);
+    });
+});
+       

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <title>TodoApp</title>
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="/js/todo.js" th:src="@{/js/todo.js}" ></script > 
+    <link rel="stylesheet"
+              href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+     <script th:inline="javascript">
+     
+     let imcompleteList = [];
+     let completeList = [];
+     
+     
+     $(() => {
+	     
+	     
+	     $(document).on('click','#addBtn', addTodo);
+	     $(document).on('click','#deleteBtn', deleteTodo);
+	     $(document).on('click','#deleteAjaxBtn', deleteAjaxTodo);
+	     $(document).on('click','#doneBtn', doneTodo);
+	     $(document).on('click','#doneAjaxBtn', doneAjaxTodo);
+	     $(document).on('click','#historyBtn', showHistory);
+	     
+	     $("#history").dialog({
+	     autoOpen: false,
+	     width: 550,
+	     modal: true,
+	     buttons: [
+	           {
+		           text: 'OK',
+		           click: function() {
+			                  $(this).dialog("close");
+		                  }
+	               },
+	         ]
+         });
+     });
+    
+   
+    </script>     
+</head>
+    
+<body>
+    
+    <header>
+        <h1>My Todo App</h1>
+    </header>
+             
+            <div class="add_todo">
+                <form name="todoForm" id="todoForm" method="post" th:action="@{/todoapp/addTodo}" /*th:object="${todo}"*/>
+                    <input type="text" id="todoContents" name="todoContents" placeholder="input your task!" />
+                    <button type="submit" id="addBtn">Add</button>            
+                </form>
+            </div>
+        
+            
+            <table id="todoTable">  
+               
+               
+               <tr  th:each="item: ${todoList}" id="todoTr">
+                   <td th:text="${item.id}" id="todoId" style="display: none;"></td>
+                   <td><button class="doneBtn" id="doneBtn" name="doneBtn" type="submit">done</button></td>
+                   <td th:text="${item.todoContents}" id="todoContents"></td> 
+                   <td> <button id="deleteBtn" type="submit">delete</button></td>  
+               </tr>    
+               
+                 
+            </table>
+                
+            <table id="ajaxTodoTable">
+                <tbody >
+                    
+                
+                </tbody>
+            </table>
+            
+           
+            
+           
+            
+           
+           
+           
+           <table id="hiddenTable" th:object="${histList}" style="display: none;">
+                <tbody>
+                    <tr th:each="item2: ${histList}">
+                        <td th:text="${item2.id}" id="histId" style="display: none;"></td >
+                        <td th:text="${item2.todoContents}" id="histContents"></td >
+                           
+                    </tr>
+                </tbody >
+           </table>
+           
+           
+           
+            <div id="history" title="history" >
+            <table id="historyTable">
+                <tbody>
+                    
+                </tbody>
+            
+            </table>
+            </div>
+            <button id="historyBtn">history</button>       
+      
+</body>
+</html>
